@@ -2,12 +2,13 @@ import { View, Text, Pressable, Image } from 'react-native'
 import React, { useState } from 'react'
 import { FontAwesome } from "@expo/vector-icons";
 import { useDispatch } from 'react-redux';
+import { addToCart, decrementQuantity, incrementQuantity, removeFromCart } from "../redux/CartReducer";
 
 
 const MenuComponent = ({food}) => {
 
   const dispatch = useDispatch()
-  const [addItems, setAddItems] = useState(0)
+  const [additems, setAddItems] = useState(0)
   const [selected, setSelected] = useState(false)
 
   return (
@@ -114,7 +115,7 @@ const MenuComponent = ({food}) => {
         style={{
           position: "absolute",
           top: 90,
-          left: 0,
+          left: 20,
 
           flexDirection: "row",
           paddingHorizontal: 9,

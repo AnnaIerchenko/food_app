@@ -1,15 +1,20 @@
-import { View, Text, SafeAreaView, ScrollView, Pressable, Modal ,Image } from 'react-native'
+import { View, Text, SafeAreaView, ScrollView, Pressable, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import {Ionicons, AntDesign, FontAwesome5} from '@expo/vector-icons'
 import { MaterialIcons} from '@expo/vector-icons'
 import FoodItem from '../components/FoodItem'
 import { useSelector } from 'react-redux'
-
+import Modal from "react-native-modal";
 
 const MenuScreen = () => {
   const cart = useSelector((state) => state.cart.cart)
   //console.log(cart)
+  const total = cart
+  .map((item) => item.price * item.quantity)
+  .reduce((curr, prev) => curr + prev, 0);
+// console.log(total);
+// console.log(cart);
   const route = useRoute()
   // console.log(route.params)//inf from prev screen
   const navigation = useNavigation()
@@ -35,22 +40,41 @@ const MenuScreen = () => {
           borderBottomLeftRadius:40,
           borderBottomRightRadius:40}}
         >
-        <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between", margin:10}}>
+        <View style={{
+          flexDirection:"row",
+          alignItems:"center",
+          justifyContent:"space-between", 
+          margin:10
+          }}>
           <Ionicons
             onPress={() => navigation.goBack()}
             name="arrow-back" size={24} color="black"/>
           <View style={{flexDirection:"row",alignItems:"center" }}>
             <AntDesign name="search1" size={22} color="black"/>
-            <Text style={{fontSize:14,fontWeight:"600",marginLeft:7}}>
+            <Text style={{fontSize:16,fontWeight:"600",marginLeft:7}}>
               Search
             </Text>
           </View>
         </View>
 
         <View 
-          style={{backgroundColor:"white",height:210,marginHorizontal:20,marginVertical:5,padding:10,borderRadius:15}}>
-          <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
-            <Text style={{fontSize:18,fontWeight:"bold"}}>{route.params.name}</Text>
+          style={{
+            backgroundColor:"white",
+            height:210,
+            marginHorizontal:20,
+            marginVertical:5,
+            padding:10,
+            borderRadius:15
+          }}>
+          <View 
+            style={{
+              flexDirection:"row",
+              alignItems:"center",
+              justifyContent:"space-between"
+            }}>
+            <Text style={{fontSize:18,fontWeight:"bold"}}>
+              {route.params.name}
+            </Text>
             <View style={{flexDirection:"row",alignItems:"center"}}>
               <AntDesign 
                 style={{marginHorizontal:7}}
@@ -59,32 +83,68 @@ const MenuScreen = () => {
             </View>
           </View>
 
-          <View style={{flexDirection:"row",alignItems:"center",marginTop:7}}>
+          <View 
+            style={{
+              flexDirection:"row",
+              alignItems:"center",
+              marginTop:7
+            }}>
             <MaterialIcons name="stars" size={24} color="green"/>
-            <Text style={{marginLeft:3,fontSize:17,fontWeight:"400"}}>{route.params.rating}</Text>
+            <Text style={{marginLeft:3,fontSize:17,fontWeight:"400"}}>
+              {route.params.rating}
+            </Text>
             <Text style={{marginLeft:3}}>*</Text>
             <Text style={{marginLeft:3,fontSize:17,fontWeight:"400"}}>
               {route.params.time}mins
             </Text>
           </View>
 
-          <Text style={{marginTop:10,color:"gray",fontSize:17}}>{route.params.cuisines}</Text>
+          <Text style={{marginTop:10,color:"gray",fontSize:17}}>
+            {route.params.cuisines}
+          </Text>
 
-          <View style={{flexDirection:"row",alignItems:"center",marginTop:10}}>
+          <View 
+            style={{
+              flexDirection:"row",
+              alignItems:"center",
+              marginTop:10
+            }}>
             <Text>Outlet</Text>
-            <Text style={{marginLeft:15,fontSize:15,fontWeight:"bold"}}>{route.params.adress}</Text>
+            <Text style={{marginLeft:15,fontSize:15,fontWeight:"bold"}}>
+              {route.params.adress}
+            </Text>
           </View>
 
-          <View style={{flexDirection:"row",alignItems:"center",marginTop:10}}>
+          <View 
+            style={{
+              flexDirection:"row",
+              alignItems:"center",
+              marginTop:10
+            }}>
             <Text>22 min</Text>
-            <Text style={{marginLeft:15,fontSize:14,fontWeight:"bold"}}>Home</Text>
+            <Text style={{marginLeft:15,fontSize:14,fontWeight:"bold"}}>
+              Home
+            </Text>
           </View>
 
-          <Text style={{borderColor:"gray",borderWidth:0.6,height:1,marginTop:12}}/>
+          <Text 
+            style={{
+              borderColor:"gray",
+              borderWidth:0.6,
+              height:1,
+              marginTop:12
+            }}/>
 
-          <View style={{flexDirection:"row",alignItems:"center",marginTop:10}}>
+          <View 
+            style={{
+              flexDirection:"row",
+              alignItems:"center",
+              marginTop:10
+            }}>
             <FontAwesome5 name="bicycle" size={24} color="orange" />
-            <Text style={{marginLeft:7,color:"gray",fontSize:16}}>0-3 Kms |</Text>
+            <Text style={{marginLeft:7,color:"gray",fontSize:16}}>
+              0-3 Kms |
+            </Text>
             <Text style={{marginLeft:7,color:"gray",fontSize:16}}
             >
               15 DeliveryFee will Apply
@@ -118,8 +178,8 @@ const MenuScreen = () => {
     <Pressable 
       onPress={toggleModal}
       style={{
-        width:50, 
-        height:50,
+        width:60, 
+        height:60,
         borderRadius:40,
         justifyContent:"center",
         backgroundColor:"black",
@@ -129,10 +189,12 @@ const MenuScreen = () => {
         right:25,
         alignContent:"center"}}>
       <MaterialIcons style={{textAlign:"center"}} name="menu-book" size={24} color="white"/>
-      <Text style={{textAlign:"center",color:"white",fontWeight:"300"}}>Menu text</Text>
+      <Text style={{textAlign:"center",color:"white",fontWeight:"300"}}>
+        Menu text
+      </Text>
     </Pressable>
 
-    {/* <Modal 
+    <Modal 
       isVisible={modalVisible} 
       onBackdropPress={toggleModal}>
         <View 
@@ -163,7 +225,63 @@ const MenuScreen = () => {
             />
           </View>
         </View>
-    </Modal> */}
+    </Modal>
+
+
+    {total === 0 ? null : (
+        <Pressable
+          style={{
+            backgroundColor: "#00A877",
+            width: "90%",
+            padding: 13,
+            marginLeft: "auto",
+            marginRight: "auto",
+            marginBottom: 30,
+            position: "absolute",
+            borderRadius: 8,
+            left: 20,
+            bottom: 10,
+          }}
+        >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <View>
+            <Text
+              style={{ fontSize: 16, fontWeight: "bold", color: "white" }}
+            >
+         {cart.length} items | {total}
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "500",
+                marginTop: 3,
+                color: "white",
+              }}
+            >
+                Extra Charges may Apply!
+            </Text>
+          </View>
+
+          <Pressable
+            onPress={() =>
+              navigation.navigate("Cart", {
+                name: route.params.name,
+              })
+            }
+          >
+            <Text style={{ fontSize: 18, fontWeight: "600", color: "white" }}>
+                View Cart
+            </Text>
+          </Pressable>
+        </View>
+      </Pressable>
+      )}
     </>
   )
 }
